@@ -9,6 +9,7 @@ var usersRouter = require('./routes/users');
 var bodyParser = require('body-parser');
 var fileUpload = require('express-fileupload');
 var cors = require('cors');
+const fs = require("fs");
 
 var app = express();
 
@@ -20,9 +21,11 @@ app.set('view engine', 'jade');
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(cors());
-app.use(bodyParser.json());
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+
+//app.use(bodyParser.json());
+var bodyParser = require('body-parser');
+app.use(bodyParser.json({limit: '30Mb'}));
+app.use(bodyParser.urlencoded({limit: '30Mb', extended: true}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(fileUpload());
@@ -35,16 +38,17 @@ app.use('/users', usersRouter);
 app.post('/upload',(req, res, next)=> {
     console.log(req);
     let videoFile = req.files.file;
-
-    videoFile.mv(`${__dirname}/public/${req.body.filename}.mp4`, function (err) {
+    videoFile.mv(`${__dirname}/videos/${req.body.filename}.mp4`, function (err) {
         if (err) {
             return res.status(500).send(err);
         }
 
-        res.json({file: `public/${req.body.filename}.mp4`});
+        res.json({file: `videos/${req.body.filename}.mp4`});
 
 
     })
+
+
 });
 
 
