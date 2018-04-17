@@ -10,8 +10,13 @@ var bodyParser = require('body-parser');
 var fileUpload = require('express-fileupload');
 var cors = require('cors');
 const fs = require("fs");
+import path from 'path';
+
+const staticFiles = express.static(path.join(__dirname, '../../test-client/build'));
+
 
 var app = express();
+app.use(staticFiles);
 
 
 
